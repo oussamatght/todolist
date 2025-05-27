@@ -1,0 +1,158 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "segoe ui", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            background-color: #f4f4f4;
+            color: #333;
+            min-height: 100vh;
+            padding: 10px;
+            background-color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #00ffc4;
+        }
+        
+        h1 {
+            margin-top: 50px;
+            margin-bottom: 20px;
+            font-size: 3rem;
+            text-align: center;
+            color: #00ffc4;
+            font-weight: 800;
+        }
+        
+        .warpper {
+            width: 700px;
+            max-width: 100%;
+            margin-top: 70px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        #todoinput {
+            box-sizing: border-box;
+            padding: 12px 20px;
+            width: 100%;
+            background: none;
+            border: #333 solid 2px;
+            border-radius: 10000px;
+            font: inherit;
+            caret-color: #1a1a1a;
+            color: white;
+        }
+        
+        #todoinput:focus {
+            outline: none;
+        }
+        
+        form {
+            position: relative;
+        }
+        
+        #add {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #00ffc4;
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10000px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        #add:hover {
+            background-color: white;
+            transition: 1s ease;
+        }
+        
+        #todo {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            background-color: #2a2a2a;
+            margin-bottom: 10px;
+            border-radius: 15px;
+            color: #00ffc4;
+        }
+        
+        .todotext {
+            padding: 15px;
+            padding-right: 0px;
+            flex: 1;
+            transition: 200ms ease;
+        }
+        
+        .delete {
+            border: none;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .checkbox {
+            border: 2px solid #00ffc4;
+            border-radius: 50%;
+            min-height: 20px;
+            min-width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: 200ms ease;
+        }
+        
+        input[type="checkbox"]:checked~.checkbox {
+            background-color: #00ffc4;
+        }
+        
+        input[type="checkbox"]:checked~.todotext {
+            text-decoration: line-through;
+            color: #666;
+        }
+        
+        input[type="checkbox"] {
+            display: none;
+        }
+        
+        input[type="checkbox"]:checked~svg {
+            fill: #1a1a1a;
+        }
+        
+        @media screen and (max-width: 500px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+            }
+            #add {
+                width: 100%;
+                position: static;
+                padding: 16px;
+                margin-top: 10px;
+                font-size: 16px;
+                transition: 500ms;
+            }
+        }
