@@ -1,64 +1,85 @@
-  const todoForm = document.querySelector("form");
-  const todoInput = document.getElementById("todoinput");
-  const todoListUl = document.getElementById("todolist");
+const todoForm = document.getElementById("todo-form");
+const todoInput = document.getElementById("todoinput");
+const todoList = document.getElementById("todolist");
+const filterButtons = document.querySelectorAll(".filters button");
+const clearAll = document.getElementById("clearAll");
 
-  let allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let currentFilter = "all";
 
-  updateTodoList();
+todoForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = todoInput.value.trim();
+  if (text === "") return;
 
-  todoForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-      addTodo();
+  todos.push({ text, completed: false });
+  todoInput.value = "";
+  saveAndRender();
+});
+
+function saveAndRender() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+  renderTodos();
+}
+
+function renderTodos() {
+  todoList.innerHTML = "";
+
+  let filteredTodos = todos;
+  if (currentFilter === "completed")
+    filteredTodos = todos.filter((t) => t.completed);
+  else if (currentFilter === "pending")
+    filteredTodos = todos.filter((t) => !t.completed);
+
+  filteredTodos.forEach((todo, index) => {
+    const li = document.createElement("li");
+    li.className = `todo-item ${todo.completed ? "completed" : ""}`;
+
+    li.innerHTML = `
+      <input type="checkbox" ${todo.completed ? "checked" : ""} />
+      <span class="text" contenteditable="true">${todo.text}</span>
+      <div class="actions">
+        <button class="delete">🗑️</button>
+      </div>
+    `;
+
+    const checkbox = li.querySelector("input");
+    const deleteBtn = li.querySelector(".delete");
+    const textSpan = li.querySelector(".text");
+
+    checkbox.addEventListener("change", () => {
+      todos[index].completed = checkbox.checked;
+      saveAndRender();
+    });
+
+    deleteBtn.addEventListener("click", () => {
+      todos.splice(index, 1);
+      saveAndRender();
+    });
+
+    textSpan.addEventListener("blur", () => {
+      todos[index].text = textSpan.textContent.trim();
+      saveAndRender();
+    });
+
+    todoList.appendChild(li);
   });
+}
 
-  function addTodo() {
-      const todoText = todoInput.value.trim();
-      if (todoText.length > 0) {
-          allTodos.push(todoText);
-          saveTodos();
-          todoInput.value = "";
-          updateTodoList();
-      }
+filterButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    filterButtons.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTodos();
+  });
+});
+
+clearAll.addEventListener("click", () => {
+  if (confirm("Are you sure you want to delete all tasks?")) {
+    todos = [];
+    saveAndRender();
   }
+});
 
-  function saveTodos() {
-      localStorage.setItem("todos", JSON.stringify(allTodos));
-  }
-
-  function updateTodoList() {
-      todoListUl.innerHTML = "";
-      allTodos.forEach((todo, index) => {
-          const todoItem = createTodoItem(todo, index);
-          todoListUl.appendChild(todoItem);
-      });
-  }
-
-  function createTodoItem(todo, index) {
-      const li = document.createElement("li");
-      li.id = "todo";
-      li.innerHTML = `
-          <input type="checkbox" id="todo-${index}">
-          <label for="todo-${index}" class="checkbox">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                 viewBox="0 0 24 24">
-              <path d="M9 16.17L4.83 12l-1.41 1.41L9 19 21 7l-1.41-1.41z" fill="black"/>
-            </svg>
-          </label>
-          <label for="todo-${index}" class="todotext">${todo}</label>
-          <button class="delete">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                 viewBox="0 0 24 24">
-              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm3-9h2v6H9zm4 0h2v6h-2zM5 5h14l-1-1H6L5 5z" fill="red"/>
-            </svg>
-          </button>
-        `;
-
-      const deleteBtn = li.querySelector(".delete");
-      deleteBtn.addEventListener("click", () => {
-          allTodos.splice(index, 1);
-          saveTodos();
-          updateTodoList();
-      });
-
-      return li;
-  }
+renderTodos();
