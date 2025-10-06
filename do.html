@@ -3,22 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Powerful To-Do List</title>
+  <title>My first To-Do app</title>
   <link rel="stylesheet" href="to do list.css" />
 </head>
 <body>
-  <div class="wrapper">
-    <h1>✨ To-Do List ✨</h1>
-
+  <div class="container">
+    <h1>To-Do List</h1>
     <form id="todo-form">
-      <input type="text" id="todoinput" placeholder="Add a new task..." autocomplete="off" />
-      <button id="add">Add</button>
+      <input
+        type="text"
+        id="todoinput"
+        placeholder="Enter a new task"
+        autocomplete="off"
+      />
+      <button type="submit" id="add">Add</button>
     </form>
 
     <div class="filters">
       <button data-filter="all" class="active">All</button>
-      <button data-filter="completed">Completed</button>
       <button data-filter="pending">Pending</button>
+      <button data-filter="completed">Completed</button>
       <button id="clearAll">Clear All</button>
     </div>
 
@@ -28,5 +32,3 @@
   <script src="to do list.js"></script>
 </body>
 </html>
-
-
