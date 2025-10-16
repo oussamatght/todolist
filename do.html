@@ -4,24 +4,33 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App</title>
+    <title>To-Do Pro</title>
     <link rel="stylesheet" href="to do list.css" />
 </head>
 
 <body>
-    <div class="wrapper">
+    <div class="app-wrapper">
         <div class="todo-box">
-            <h2>Todo App</h2>
-            <div class="input-area">
-                <input type="text" id="todo-input" placeholder="Add your new todo" autocomplete="off" />
-                <button id="add-btn">+</button>
-            </div>
+            <header>
+                <h1> To-Do Pro</h1>
+                <p class="subtitle">Plan your day smarter</p>
+            </header>
+
+            <form id="todo-form">
+                <input type="text" id="todo-input" placeholder="Add a new task..." autocomplete="off" />
+                <button type="submit" id="add-btn">＋</button>
+            </form>
+
+            <input type="text" id="search" placeholder="Search tasks..." autocomplete="off" />
 
             <ul id="todo-list"></ul>
 
-            <div class="footer">
-                <p id="task-info">You have 0 pending tasks</p>
-                <button id="clear-btn">Clear All</button>
+            <div class="info-panel">
+                <div id="task-info"></div>
+                <div class="progress-container">
+                    <div class="progress"></div>
+                </div>
+                <button id="clear-btn" class="clear-all"> Clear All</button>
             </div>
         </div>
     </div>
