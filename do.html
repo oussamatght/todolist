@@ -4,37 +4,49 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>To-Do Pro</title>
+    <title>Task Manager</title>
     <link rel="stylesheet" href="to do list.css" />
 </head>
 
-  <body>
-    <div class="todo-container">
-      <h1> Smart To-Do-list</h1>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="title-section">
+                <h1>Task Manager</h1>
+                <p>Stay focused. Stay organized.</p>
+            </div>
+            <button id="theme-toggle">☀️</button>
+        </header>
 
-      <form id="todo-form">
-        <input id="todo-input" type="text" placeholder="Add a task..." />
-        <button id="add-btn" type="submit">+</button>
-      </form>
+        <form id="todo-form">
+            <input type="text" id="todoinput" placeholder="Add a new task..." autocomplete="off" />
+            <button id="add">Add</button>
+        </form>
 
-      <input id="search" type="text" placeholder="Search tasks..." />
+        <div class="task-stats">
+            <span id="pending-count">0</span> pending •
+            <span id="completed-count">0</span> completed
+        </div>
 
-      <ul id="todo-list"></ul>
+        <div class="filters">
+            <button data-filter="all" class="active">All</button>
+            <button data-filter="pending">Pending</button>
+            <button data-filter="completed">Completed</button>
+            <button id="clearAll">Clear All</button>
+        </div>
 
-      <div class="footer">
-        <p id="stats"></p>
-        <button id="undo-btn" class="small">Undo Delete</button>
-        <button id="clear-btn" class="danger">Clear All</button>
-      </div>
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+
+        <ul id="todolist"></ul>
     </div>
 
-   
-
+    <footer>
+        <p>© 2025 todolist. All rights reserved</p>
+    </footer>
 
     <script src="to do list.js"></script>
 </body>
 
 </html>
-
-
-
