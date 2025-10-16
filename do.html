@@ -4,47 +4,83 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Manager</title>
+    <title>FocusList — Smart To-Do</title>
     <link rel="stylesheet" href="to do list.css" />
 </head>
 
 <body>
-    <div class="wrapper">
-        <header>
-            <div class="title-section">
-                <h1>Task Manager</h1>
-                <p>Stay focused. Stay organized.</p>
+    <div class="app">
+        <header class="topbar">
+            <div class="brand">
+                <h1>Focus<span>List</span></h1>
+                <small>Focus. Finish. Feel Good.</small>
             </div>
-            <button id="theme-toggle">☀️</button>
+
+            <div class="top-actions">
+                <button id="undoBtn" title="Undo">↩️</button>
+                <button id="redoBtn" title="Redo">↪️</button>
+                <button id="clearBtn" title="Clear All">🗑️</button>
+                <button id="sortBtn" title="Sort">Sort: Priority</button>
+                <button id="themeToggle" title="Toggle Theme">🌓</button>
+            </div>
         </header>
 
-        <form id="todo-form">
-            <input type="text" id="todoinput" placeholder="Add a new task..." autocomplete="off" />
-            <button id="add">Add</button>
-        </form>
+        <section class="panel">
+            <!-- Add / Compose -->
+            <div class="composer">
+                <form id="todoForm">
+                    <input type="text" id="todoText" placeholder="What needs to be done?" required />
+                    <input type="date" id="todoDue" />
+                    <select id="todoPriority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+                    <button type="submit" id="addBtn">Add</button>
+                </form>
 
-        <div class="task-stats">
-            <span id="pending-count">0</span> pending •
-            <span id="completed-count">0</span> completed
-        </div>
+                <div class="controls-row">
+                    <input type="text" id="search" placeholder="Search tasks..." />
+                    <div class="filters">
+                        <button data-filter="all" class="active">All</button>
+                        <button data-filter="pending">Pending</button>
+                        <button data-filter="completed">Completed</button>
+                        <button data-filter="today">Today</button>
+                    </div>
+                </div>
+            </div>
 
-        <div class="filters">
-            <button data-filter="all" class="active">All</button>
-            <button data-filter="pending">Pending</button>
-            <button data-filter="completed">Completed</button>
-            <button id="clearAll">Clear All</button>
-        </div>
+            <!-- Task List -->
+            <div class="list-area">
+                <div class="stats">
+                    <span>Total: <strong id="statTotal">0</strong></span>
+                    <span>Done: <strong id="statDone">0</strong></span>
+                    <span>Progress: <strong id="statPct">0%</strong></span>
+                </div>
+                <div id="progressWrap">
+                    <div id="progressBar"></div>
+                </div>
+                <ul class="todo-list" id="todoList"></ul>
+            </div>
 
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
+            <!-- Analytics -->
+            <aside class="analytics">
+                <h3>Overview</h3>
+                <div id="chartMini">
+                    <p>Total tasks: <strong id="aTotal">0</strong></p>
+                    <p>High priority: <strong id="aHigh">0</strong></p>
+                    <p>Low priority: <strong id="aLow">0</strong></p>
+                    <p>Due today: <strong id="aToday">0</strong></p>
+                </div>
+            </aside>
+        </section>
 
-        <ul id="todolist"></ul>
+        <footer class="bottom-actions">
+            <button id="exportBtn">Export JSON</button>
+            <button id="importBtn">Import JSON</button>
+            <input type="file" id="fileImport" accept="application/json" style="display:none;">
+        </footer>
     </div>
-
-    <footer>
-        <p>© 2025 todolist. All rights reserved</p>
-    </footer>
 
     <script src="to do list.js"></script>
 </body>
