@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My first To-Do app</title>
-  <link rel="stylesheet" href="to do list.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>To-Do List app</h1>
-    <form id="todo-form">
-      <input
-        type="text"
-        id="todoinput"
-        placeholder="Enter a new task"
-        autocomplete="off"
-      />
-      <button type="submit" id="add">Add</button>
-    </form>
 
-    <div class="filters">
-      <button data-filter="all" class="active">All</button>
-      <button data-filter="pending">Pending</button>
-      <button data-filter="completed">Completed</button>
-      <button id="clearAll">Clear All</button>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="to do list.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="todo-box">
+            <h2>Todo App</h2>
+            <div class="input-area">
+                <input type="text" id="todo-input" placeholder="Add your new todo" autocomplete="off" />
+                <button id="add-btn">+</button>
+            </div>
+
+            <ul id="todo-list"></ul>
+
+            <div class="footer">
+                <p id="task-info">You have 0 pending tasks</p>
+                <button id="clear-btn">Clear All</button>
+            </div>
+        </div>
     </div>
 
-    <ul id="todolist"></ul>
-  </div>
-
-  <script src="to do list.js"></script>
+    <script src="to do list.js"></script>
 </body>
-</html>
 
+</html>
