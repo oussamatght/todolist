@@ -1,181 +1,151 @@
+const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
-const addBtn = document.getElementById("add-btn");
 const list = document.getElementById("todo-list");
 const clearBtn = document.getElementById("clear-btn");
-const taskInfo = document.getElementById("task-info");
+const stats = document.getElementById("stats");
+const undoBtn = document.getElementById("undo-btn");
+const search = document.getElementById("search");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let lastDeleted = null;
 
-function updateLocalStorage() {
+function save() {
   localStorage.setItem("todos", JSON.stringify(todos));
 }
 
-function updateTaskInfo() {
-  const total = todos.length;
-  const pending = todos.filter((t) => !t.completed).length;
-  const completed = total - pending;
-
-  taskInfo.innerHTML = `
-    You have <strong>${pending}</strong> pending task${pending !== 1 ? "s" : ""} 
-    and <strong>${completed}</strong> completed.
-  `;
-
-  const progress = document.querySelector(".progress");
-  if (progress) {
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-    progress.style.width = percent + "%";
-    progress.textContent = percent + "%";
-  }
-}
-
-function renderTodos() {
+function render() {
   list.innerHTML = "";
+  const query = search.value.toLowerCase();
+  const filtered = todos.filter(t => t.text.toLowerCase().includes(query));
 
-  todos.forEach((todo, index) => {
+  filtered.sort((a, b) => a.completed - b.completed);
+
+  filtered.forEach((t, i) => {
     const li = document.createElement("li");
-    li.classList.add("todo-item");
-    li.setAttribute("draggable", "true");
-    li.dataset.index = index;
-
-    const check = document.createElement("input");
-    check.type = "checkbox";
-    check.checked = todo.completed;
-    check.className = "todo-check";
-    check.addEventListener("change", () => {
-      todo.completed = check.checked;
-      updateLocalStorage();
-      renderTodos();
-    });
+    li.className = "todo-item";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = t.completed;
 
     const span = document.createElement("span");
-    span.classList.add("todo-text");
-    if (todo.completed) span.classList.add("completed");
-    span.textContent = todo.text;
+    span.textContent = t.text;
+    span.className = "todo-text";
+    if (t.completed) span.classList.add("completed");
 
-    span.addEventListener("dblclick", () => {
-      const editInput = document.createElement("input");
-      editInput.type = "text";
-      editInput.value = todo.text;
-      editInput.className = "edit-input";
-      li.replaceChild(editInput, span);
-      editInput.focus();
+    const time = document.createElement("span");
+    time.className = "todo-time";
+    time.textContent = t.completed
+      ? `✔ done ${timeAgo(t.completedAt)}`
+      : `🕒 added ${timeAgo(t.createdAt)}`;
 
-      editInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          todo.text = editInput.value.trim();
-          updateLocalStorage();
-          renderTodos();
-        } else if (e.key === "Escape") {
-          renderTodos();
-        }
-      });
-
-      editInput.addEventListener("blur", () => {
-        todo.text = editInput.value.trim();
-        updateLocalStorage();
-        renderTodos();
-      });
+    checkbox.addEventListener("change", () => {
+      t.completed = checkbox.checked;
+      t.completedAt = new Date().toISOString();
+      save();
+      render();
     });
-
-    const date = document.createElement("small");
-    date.classList.add("date");
-    date.textContent = new Date(todo.date).toLocaleDateString();
 
     const del = document.createElement("button");
-    del.classList.add("delete-btn");
     del.textContent = "🗑";
-    del.addEventListener("click", () => {
-      todos.splice(index, 1);
-      updateLocalStorage();
-      renderTodos();
-    });
+    del.style.border = "none";
+    del.style.background = "none";
+    del.style.cursor = "pointer";
+    del.addEventListener("click", () => removeTodo(i));
 
-    li.append(check, span, date, del);
+    li.append(checkbox, span, time, del);
     list.appendChild(li);
   });
 
-  updateTaskInfo();
-  enableDragAndDrop();
+  updateStats();
+  updateBg();
 }
 
-function addTask() {
-  const text = input.value.trim();
-  if (!text) return;
-
+function addTodo(text) {
   todos.push({
     text,
     completed: false,
-    date: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   });
-
-  input.value = "";
-  updateLocalStorage();
-  renderTodos();
+  save();
+  render();
 }
 
-addBtn.addEventListener("click", addTask);
-input.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") addTask();
+function removeTodo(i) {
+  const item = todos.splice(i, 1)[0];
+  lastDeleted = item;
+  save();
+  render();
+}
+
+function updateStats() {
+  const total = todos.length;
+  const done = todos.filter(t => t.completed).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  let msg = "Let's get started!";
+  if (pct > 50 && pct < 100) msg = "You're doing great!";
+  if (pct === 100 && total > 0) msg = "All done! 🎉";
+  stats.textContent = `${done}/${total} completed (${pct}%) — ${msg}`;
+}
+
+function updateBg() {
+  const done = todos.filter(t => t.completed).length;
+  const total = todos.length;
+  const ratio = total ? done / total : 0;
+  const colors = [
+    [102, 126, 234],
+    [118, 75, 162],
+  ];
+  const mixed = colors[0].map((c, i) =>
+    Math.round(c + (colors[1][i] - c) * ratio)
+  );
+  document.body.style.background = `linear-gradient(135deg, rgb(${mixed[0]},${mixed[1]},${mixed[2]}), #764ba2)`;
+}
+
+function timeAgo(time) {
+  const diff = (Date.now() - new Date(time)) / 1000;
+  if (diff < 60) return "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+// Event listeners
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  addTodo(text);
+  input.value = "";
 });
 
 clearBtn.addEventListener("click", () => {
-  if (todos.length === 0) return;
-  if (confirm("Are you sure you want to delete all tasks?")) {
+  if (confirm("Delete all tasks?")) {
     todos = [];
-    updateLocalStorage();
-    renderTodos();
+    save();
+    render();
   }
 });
 
-function enableDragAndDrop() {
-  const items = list.querySelectorAll(".todo-item");
-
-  items.forEach((item) => {
-    item.addEventListener("dragstart", (e) => {
-      e.dataTransfer.setData("text/plain", item.dataset.index);
-      item.classList.add("dragging");
-    });
-
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-    });
-
-    item.addEventListener("dragover", (e) => e.preventDefault());
-
-    item.addEventListener("drop", (e) => {
-      e.preventDefault();
-      const fromIndex = e.dataTransfer.getData("text/plain");
-      const toIndex = item.dataset.index;
-
-      const [moved] = todos.splice(fromIndex, 1);
-      todos.splice(toIndex, 0, moved);
-      updateLocalStorage();
-      renderTodos();
-    });
-  });
-}
-
-const search = document.createElement("input");
-search.type = "text";
-search.placeholder = "Search tasks...";
-search.className = "search-input";
-document.querySelector(".todo-box").insertBefore(search, list);
-
-search.addEventListener("input", () => {
-  const q = search.value.toLowerCase();
-  const filtered = todos.filter((t) => t.text.toLowerCase().includes(q));
-  list.innerHTML = "";
-  filtered.forEach((todo) => {
-    const li = document.createElement("li");
-    li.classList.add("todo-item");
-    li.innerHTML = `<span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>`;
-    list.appendChild(li);
-  });
+undoBtn.addEventListener("click", () => {
+  if (lastDeleted) {
+    todos.push(lastDeleted);
+    lastDeleted = null;
+    save();
+    render();
+  }
 });
 
-const progressContainer = document.createElement("div");
-progressContainer.classList.add("progress-container");
-progressContainer.innerHTML = `<div class="progress"></div>`;
-document.querySelector(".todo-box").appendChild(progressContainer);
+search.addEventListener("input", render);
 
-renderTodos();
+// Keyboard shortcuts
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey && e.key === "Backspace") {
+    if (confirm("Clear all tasks?")) {
+      todos = [];
+      save();
+      render();
+    }
+  }
+});
+
+render();
