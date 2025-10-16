@@ -1,96 +1,70 @@
-const todoForm = document.getElementById("todo-form");
-const todoInput = document.getElementById("todoinput");
-const todoList = document.getElementById("todolist");
-const filterButtons = document.querySelectorAll(".filters button");
-const clearAllBtn = document.getElementById("clearAll");
+const input = document.getElementById("todo-input");
+const addBtn = document.getElementById("add-btn");
+const list = document.getElementById("todo-list");
+const clearBtn = document.getElementById("clear-btn");
+const taskInfo = document.getElementById("task-info");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
-let currentFilter = "all";
 
-todoForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const text = todoInput.value.trim();
-  if (!text) return;
-  todos.push({ text, completed: false });
-  todoInput.value = "";
-  saveAndRender();
-});
-
-function saveAndRender() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-  renderTodos();
+function updateLocalStorage() {
+    localStorage.setItem("todos", JSON.stringify(todos));
 }
 
 function renderTodos() {
-  todoList.innerHTML = "";
+    list.innerHTML = "";
+    todos.forEach((todo, index) => {
+        const li = document.createElement("li");
+        li.classList.add("todo-item");
 
-  let filtered = todos;
-  if (currentFilter === "pending") {
-    filtered = todos.filter((t) => !t.completed);
-  } else if (currentFilter === "completed") {
-    filtered = todos.filter((t) => t.completed);
-  }
+        const span = document.createElement("span");
+        span.classList.add("todo-text");
+        if (todo.completed) span.classList.add("completed");
+        span.textContent = todo.text;
 
-  filtered.forEach((todo, index) => {
-    const li = document.createElement("li");
-    li.className = "todo-item" + (todo.completed ? " completed" : "");
+        span.addEventListener("click", () => {
+            todos[index].completed = !todos[index].completed;
+            updateLocalStorage();
+            renderTodos();
+        });
 
-    li.innerHTML = `
-      <input type="checkbox" ${todo.completed ? "checked" : ""}/>
-      <span class="text" contenteditable="true">${todo.text}</span>
-      <div class="actions">
-        <button class="delete">🗑</button>
-      </div>
-    `;
+        const del = document.createElement("button");
+        del.textContent = "🗑";
+        del.classList.add("delete-btn");
+        del.addEventListener("click", () => {
+            todos.splice(index, 1);
+            updateLocalStorage();
+            renderTodos();
+        });
 
-    const chk = li.querySelector("input[type='checkbox']");
-    const delBtn = li.querySelector(".delete");
-    const textSpan = li.querySelector(".text");
-
-    chk.addEventListener("change", () => {
-      // we need to find the original todo in todos array
-      const realIndex = todos.findIndex((t) => t === todo);
-      if (realIndex >= 0) {
-        todos[realIndex].completed = chk.checked;
-        saveAndRender();
-      }
+        li.appendChild(span);
+        li.appendChild(del);
+        list.appendChild(li);
     });
 
-    delBtn.addEventListener("click", () => {
-      const realIndex = todos.findIndex((t) => t === todo);
-      if (realIndex >= 0) {
-        todos.splice(realIndex, 1);
-        saveAndRender();
-      }
-    });
-
-    textSpan.addEventListener("blur", () => {
-      const newText = textSpan.textContent.trim();
-      const realIndex = todos.findIndex((t) => t === todo);
-      if (realIndex >= 0 && newText) {
-        todos[realIndex].text = newText;
-        saveAndRender();
-      }
-    });
-
-    todoList.appendChild(li);
-  });
+    const pending = todos.filter((t) => !t.completed).length;
+    taskInfo.textContent = `You have ${pending} pending task${pending !== 1 ? "s" : ""}`;
 }
 
-filterButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    filterButtons.forEach((b) => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
+addBtn.addEventListener("click", () => {
+    const text = input.value.trim();
+    if (!text) return;
+    todos.push({ text, completed: false });
+    input.value = "";
+    updateLocalStorage();
     renderTodos();
-  });
 });
 
-clearAllBtn.addEventListener("click", () => {
-  if (confirm("Delete all tasks?")) {
-    todos = [];
-    saveAndRender();
-  }
+clearBtn.addEventListener("click", () => {
+    if (todos.length === 0) return;
+    if (confirm("Clear all tasks?")) {
+        todos = [];
+        updateLocalStorage();
+        renderTodos();
+    }
+});
+
+input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addBtn.click();
 });
 
 renderTodos();
