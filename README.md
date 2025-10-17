@@ -1,11 +1,37 @@
-📝 To-Do List (Legacy Project)
-Tech Stack: HTML • CSS • JavaScript • LocalStorage
-Live Demo: [https://todolist-ivory-sigma.vercel.app/]
-Overview
-A simple To-Do List app built at the beginning of my web development journey. Users can add, edit, delete, and mark tasks as completed. Data is saved locally in the browser using localStorage.
 
-Features
-Add, edit, delete tasks
-Mark tasks as completed
-Filter tasks (optional)
-Responsive layout (basic)
+FocusList — Smart To-Do (Summary)
+
+FocusList is a modern, responsive to-do web app designed to boost productivity with advanced task management features.
+Live Demo: [https://todolist-ivory-sigma.vercel.app/]
+
+Key Features:
+
+Add, edit, delete tasks with inline editing.
+
+Set priorities: high, normal, low.
+
+Due dates & browser notifications for reminders.
+
+Drag & drop task reordering.
+
+Undo/redo functionality.
+
+Export/import tasks as JSON.
+
+Search, filter, and sort tasks.
+
+Visual progress bar and analytics (total, priority, due today).
+
+Light/Dark theme toggle with persistence.
+
+Responsive design for desktop and mobile.
+
+Keyboard shortcuts for fast workflow (/ for search, Ctrl+Z undo, Ctrl+Y redo).
+
+Tech Stack:
+
+HTML5, CSS3, JavaScript (ES6+)
+
+LocalStorage for persistence
+
+Notification API for reminders
