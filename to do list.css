@@ -11,18 +11,12 @@
     --transition: 0.25s ease;
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
-    height: 100%;
-}
+html, body { height: 100%; margin: 0; }
 
 body {
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    margin: 0;
+    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background: linear-gradient(180deg, #f8faff, #eef1ff);
     color: #0f172a;
     -webkit-font-smoothing: antialiased;
@@ -55,9 +49,7 @@ body {
     margin: 0;
 }
 
-.brand h1 span {
-    color: var(--accent);
-}
+.brand h1 span { color: var(--accent); }
 
 .brand small {
     display: block;
@@ -80,6 +72,11 @@ body {
     background: var(--glass);
 }
 
+.top-actions button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .panel {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -99,9 +96,7 @@ body {
     gap: 10px;
 }
 
-#todoText,
-#todoDue,
-#todoPriority {
+#todoText, #todoDue, #todoPriority {
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #e6e9f2;
@@ -114,10 +109,9 @@ body {
     min-width: 180px;
 }
 
-#todoText:focus,
-#todoDue:focus,
-#todoPriority:focus {
+#todoText:focus, #todoDue:focus, #todoPriority:focus {
     border-color: var(--accent);
+    outline: none;
 }
 
 #addBtn {
@@ -167,8 +161,7 @@ body {
     transition: all var(--transition);
 }
 
-.filters button.active,
-.filters button:hover {
+.filters button.active, .filters button:hover {
     background: var(--accent);
     color: #fff;
     border-color: var(--accent);
@@ -211,8 +204,6 @@ body {
     margin: 0;
     max-height: 420px;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #ccc transparent;
 }
 
 .todo-item {
@@ -237,6 +228,7 @@ body {
     align-items: center;
     gap: 10px;
     min-width: 0;
+    flex: 1;
 }
 
 .checkbox {
@@ -248,6 +240,7 @@ body {
     place-items: center;
     cursor: pointer;
     transition: background var(--transition), border var(--transition);
+    flex-shrink: 0;
 }
 
 .checkbox.checked {
@@ -255,12 +248,21 @@ body {
     border-color: var(--accent);
 }
 
+.text {
+    flex: 1;
+    min-width: 0;
+}
+
 .text .title {
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 380px;
+}
+
+.todo-item.completed .title {
+    text-decoration: line-through;
+    opacity: 0.5;
 }
 
 .meta {
@@ -327,7 +329,7 @@ body {
     font-size: 1.1rem;
 }
 
-#chartMini p {
+.analytics p {
     margin: 6px 0;
     color: var(--muted);
     font-size: 0.9rem;
@@ -355,106 +357,6 @@ body {
     background: #f8f9ff;
     border-color: var(--accent);
     color: var(--accent);
-}
-
-:focus {
-    outline: 3px solid rgba(108, 99, 255, 0.2);
-    outline-offset: 3px;
-}
-
-@media (max-width: 1024px) {
-    .panel {
-        grid-template-columns: 1fr 280px;
-    }
-}
-
-@media (max-width: 900px) {
-    .panel {
-        grid-template-columns: 1fr;
-    }
-    .analytics {
-        order: 3;
-    }
-    .list-area {
-        order: 2;
-    }
-    .composer {
-        order: 1;
-    }
-}
-
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-    .app {
-        margin-top: 10px;
-    }
-    .brand h1 {
-        font-size: 1.25rem;
-    }
-    #todoText {
-        flex: 1 1 100%;
-    }
-    .todo-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .right {
-        margin-top: 6px;
-    }
-}
-
-body.dark {
-    --bg: #111827;
-    --card: #1f2937;
-    --muted: #94a3b8;
-    --accent: #8b5cf6;
-    --high: #f87171;
-    --low: #34d399;
-    --glass: rgba(255, 255, 255, 0.08);
-    --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    background: linear-gradient(180deg, #0f172a, #1e293b);
-    color: #e2e8f0;
-}
-
-body.dark .top-actions button:hover,
-body.dark .icon-btn:hover {
-    background: var(--glass);
-}
-
-body.dark .filters button.active,
-body.dark #addBtn {
-    background: var(--accent);
-    color: #fff;
-}
-
-body.dark .list-area,
-body.dark .composer,
-body.dark .analytics {
-    background: var(--card);
-    box-shadow: var(--shadow);
-}
-
-body.dark #progressWrap {
-    background: #334155;
-}
-
-@media (max-width: 480px) {
-    .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .top-actions {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        justify-content: flex-end;
-    }
-    #todoText {
-        flex: 1 1 100%;
-    }
 }
 
 .toast-container {
@@ -488,19 +390,39 @@ body.dark #progressWrap {
     opacity: 1;
 }
 
-.toast.success {
-    border-left: 5px solid #22c55e;
-}
+.toast.success { border-left: 5px solid #22c55e; }
+.toast.error { border-left: 5px solid #ef4444; }
+.toast.info { border-left: 5px solid var(--accent); }
 
-.toast.error {
-    border-left: 5px solid #ef4444;
-}
-
-.toast.info {
-    border-left: 5px solid var(--accent);
+body.dark {
+    --bg: #111827;
+    --card: #1f2937;
+    --muted: #94a3b8;
+    --accent: #8b5cf6;
+    --glass: rgba(255, 255, 255, 0.08);
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(180deg, #0f172a, #1e293b);
+    color: #e2e8f0;
 }
 
 body.dark .toast {
     background: #1e293b;
     color: #f8fafc;
+}
+
+body.dark #progressWrap {
+    background: #334155;
+}
+
+@media (max-width: 900px) {
+    .panel {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    .app { margin-top: 10px; }
+    .brand h1 { font-size: 1.25rem; }
+    #todoText { flex: 1 1 100%; }
 }
