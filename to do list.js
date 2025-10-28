@@ -517,3 +517,4 @@ function requestNotificationPermission() {
         console.log("Notification permission already set to:", Notification.permission);
     }
 }
+
