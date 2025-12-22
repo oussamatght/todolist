@@ -6,7 +6,7 @@ Live Demo: [https://todolist-ivory-sigma.vercel.app/]
 
 Key Features:
 
-Add, edit, delete tasks with inline editing.
+Add, edit delete tasks with inline editing.
 
 Set priorities: high, normal, low.
 
